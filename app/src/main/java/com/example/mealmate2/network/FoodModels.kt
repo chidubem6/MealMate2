@@ -7,24 +7,15 @@ import com.google.gson.annotations.SerializedName
 import java.lang.reflect.Type
 import kotlin.math.roundToInt
 
-data class FatSecretTokenResponse(
-    @SerializedName("access_token") val accessToken: String,
-    @SerializedName("expires_in") val expiresInSeconds: Long
-)
-
 data class FoodSearchResponse(
     @SerializedName("foods_search") val foodsSearch: FatSecretFoodsSearch? = null,
     @SerializedName("foods") val foods: FatSecretFoods? = null,
+    @SerializedName("food") val food: FoodProduct? = null,
     @SerializedName("error") val error: FatSecretError? = null
 ) {
     val products: List<FoodProduct>
         get() = foodsSearch?.results?.foods ?: foods?.food.orEmpty()
 }
-
-data class FoodGetResponse(
-    @SerializedName("food") val food: FoodProduct? = null,
-    @SerializedName("error") val error: FatSecretError? = null
-)
 
 data class FatSecretError(
     @SerializedName("code") val code: Int? = null,

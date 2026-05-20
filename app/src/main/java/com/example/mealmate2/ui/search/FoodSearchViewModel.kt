@@ -93,7 +93,7 @@ class FoodSearchViewModel(app: Application) : AndroidViewModel(app) {
                 _searchResults.value = customResults + apiResults
             } catch (e: MissingFatSecretCredentialsException) {
                 Log.w(TAG, "FatSecret credentials missing", e)
-                _error.value = "FatSecret API credentials are missing. Add them to local.properties."
+                _error.value = "FatSecret API credentials are missing. Add the Consumer Key and Secret to local.properties."
                 _searchResults.value = emptyList()
             } catch (e: FatSecretApiException) {
                 Log.w(TAG, "FatSecret API error", e)
@@ -104,8 +104,8 @@ class FoodSearchViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: HttpException) {
                 Log.w(TAG, "FatSecret HTTP error", e)
                 _error.value = when (e.code()) {
-                    400 -> "FatSecret rejected the request. Check the client ID and secret in local.properties, then rebuild the app."
-                    401 -> "FatSecret credentials were rejected. Check your client ID and secret."
+                    400 -> "FatSecret rejected the request. Check the Consumer Key and Secret in local.properties, then rebuild the app."
+                    401 -> "FatSecret credentials were rejected. Check your Consumer Key and Secret."
                     429 -> "Too many searches. Wait a minute and try again."
                     503 -> "FatSecret is temporarily unavailable. Try again shortly."
                     else -> "FatSecret search failed (${e.code()}). Try again shortly."
@@ -137,7 +137,7 @@ class FoodSearchViewModel(app: Application) : AndroidViewModel(app) {
             service.getFood(foodId)
         } catch (e: MissingFatSecretCredentialsException) {
             Log.w(TAG, "FatSecret credentials missing", e)
-            _error.value = "FatSecret API credentials are missing. Add them to local.properties."
+            _error.value = "FatSecret API credentials are missing. Add the Consumer Key and Secret to local.properties."
             product
         } catch (e: FatSecretApiException) {
             Log.w(TAG, "FatSecret food detail error", e)
@@ -148,8 +148,8 @@ class FoodSearchViewModel(app: Application) : AndroidViewModel(app) {
         } catch (e: HttpException) {
             Log.w(TAG, "FatSecret food detail HTTP error", e)
             _error.value = when (e.code()) {
-                400 -> "FatSecret rejected the request. Check the client ID and secret in local.properties, then rebuild the app."
-                401 -> "FatSecret credentials were rejected. Check your client ID and secret."
+                400 -> "FatSecret rejected the request. Check the Consumer Key and Secret in local.properties, then rebuild the app."
+                401 -> "FatSecret credentials were rejected. Check your Consumer Key and Secret."
                 else -> "Could not load serving sizes (${e.code()})."
             }
             product

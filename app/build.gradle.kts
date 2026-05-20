@@ -21,6 +21,9 @@ fun secretValue(name: String): String =
         .replace("\\", "\\\\")
         .replace("\"", "\\\"")
 
+fun secretValue(name: String, fallbackName: String): String =
+    secretValue(name).ifBlank { secretValue(fallbackName) }
+
 android {
     namespace = "com.example.mealmate2"
     compileSdk = 36
@@ -35,6 +38,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "FATSECRET_CLIENT_ID", "\"${secretValue("FATSECRET_CLIENT_ID")}\"")
         buildConfigField("String", "FATSECRET_CLIENT_SECRET", "\"${secretValue("FATSECRET_CLIENT_SECRET")}\"")
+        buildConfigField("String", "FATSECRET_CONSUMER_KEY", "\"${secretValue("FATSECRET_CONSUMER_KEY", "FATSECRET_CLIENT_ID")}\"")
+        buildConfigField("String", "FATSECRET_CONSUMER_SECRET", "\"${secretValue("FATSECRET_CONSUMER_SECRET", "FATSECRET_CLIENT_SECRET")}\"")
     }
 
     buildFeatures {
