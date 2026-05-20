@@ -11,7 +11,8 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Chidu\\\\AndroidStudioProjects\\\\MealMate2\\\\app\\\\src\\\\main\" -Recurse -Filter \"*.kt\")",
       "Bash(Select-Object -ExpandProperty FullName)",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chidu\\\\AndroidStudioProjects\\\\MealMate2\\\\app\\\\src\\\\main\\\\res\" -Recurse -File | ForEach-Object { $_.FullName })",
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(Get-Content *)"
     ]
   }
 }

@@ -10,11 +10,31 @@
 
     <string name="calories_remaining">%1$d kcal remaining</string>
     <string name="calories_summary">Eaten: %1$d / Goal: %2$d kcal</string>
+    <string name="calories_summary_default">Eaten: 0 / Goal: 2000 kcal</string>
+    <string name="previous_day">Previous day</string>
+    <string name="next_day">Next day</string>
+    <string name="good_morning">Good morning</string>
+    <string name="good_afternoon">Good afternoon</string>
+    <string name="good_evening">Good evening</string>
     <string name="macros">Macros</string>
     <string name="carbs">Carbs</string>
     <string name="fat">Fat</string>
     <string name="protein">Protein</string>
     <string name="macro_summary">%1$dg / %2$dg</string>
+    <string name="macro_summary_carbs_default">0g / 250g</string>
+    <string name="macro_summary_fat_default">0g / 65g</string>
+    <string name="macro_summary_protein_default">0g / 50g</string>
+    <string name="diary">Diary</string>
+    <string name="water">WATER</string>
+    <string name="total_water_amount">Total water amount</string>
+    <string name="total_water_amount_with_unit">Total water amount (%1$s)</string>
+    <string name="water_goal">Goal: %1$s %2$s</string>
+    <string name="water_goal_default">Goal: 2000 ml</string>
+    <string name="water_quick_add">+%1$s %2$s</string>
+    <string name="water_quick_add_150">+150ml</string>
+    <string name="water_quick_add_250">+250ml</string>
+    <string name="water_quick_add_330">+330ml</string>
+    <string name="water_quick_add_500">+500ml</string>
 
     <string name="breakfast">Breakfast</string>
     <string name="lunch">Lunch</string>
@@ -25,10 +45,27 @@
     <string name="weight_hint">Weight (kg)</string>
     <string name="notes_hint">Notes</string>
     <string name="save">Save</string>
+    <string name="new_food">New Food</string>
+    <string name="food_name_required_hint">Food name *</string>
+    <string name="brand_optional_hint">Brand (optional)</string>
+    <string name="serving_size_example_hint">Serving size (e.g. 100g)</string>
+    <string name="nutrition_per_serving">Nutrition per serving</string>
+    <string name="calories_required_hint">Calories (kcal) *</string>
+    <string name="carbs_grams_hint">Carbs (g)</string>
+    <string name="fat_grams_hint">Fat (g)</string>
+    <string name="protein_grams_hint">Protein (g)</string>
+    <string name="save_food">Save Food</string>
 
     <string name="search_food">Search Food</string>
     <string name="search_hint">Search food…</string>
     <string name="no_results">No results found</string>
+    <string name="no_custom_foods_match">No custom foods match \"%1$s\"</string>
+    <string name="no_custom_foods_saved">No custom foods saved yet</string>
+    <string name="food_no_macro_data">This result has no serving or macro data.</string>
+    <string name="servings_count_error">Enter a number greater than 0</string>
+    <string name="carbs_preview">Carbs: %1$sg</string>
+    <string name="fat_preview">Fat: %1$sg</string>
+    <string name="protein_preview">Protein: %1$sg</string>
     <string name="quantity_grams">Quantity (grams)</string>
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
@@ -36,6 +73,7 @@
 
     <string name="kcal_per_100g">%1$d kcal/100g</string>
     <string name="kcal_unit">%1$d kcal</string>
+    <string name="kcal_zero">0 kcal</string>
     <string name="macros_summary">C:%1$dg  F:%2$dg  P:%3$dg</string>
 
     <string name="seven_day_average">7-Day Average</string>
@@ -64,4 +102,10 @@
 
     <string name="weight_reminder_title">MealMate — Log your weight</string>
     <string name="weight_reminder_message">Don\'t forget to log today\'s weight!</string>
+    <string name="meal_templates_title">Meal Templates</string>
+    <string name="close">Close</string>
+    <string name="empty_meal_templates">No templates yet.\nLong-press a meal card on the home screen to save one.</string>
+    <string name="template_name_placeholder">Template name</string>
+    <string name="template_summary_placeholder">3 items · 450 kcal</string>
+    <string name="delete_template">Delete template</string>
 </resources>
