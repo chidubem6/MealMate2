@@ -35,17 +35,50 @@ class UserPreferences(context: Context) {
     val macroPercentGoals: MacroPercentGoals
         get() = MacroPercentGoals(carbGoalPercent, fatGoalPercent, proteinGoalPercent)
 
+    var mealsPerDay: Int
+        get() = prefs.getInt(KEY_MEALS_PER_DAY, 3)
+        set(value) = prefs.edit().putInt(KEY_MEALS_PER_DAY, value.coerceAtLeast(1)).apply()
+
     var startingWeightKg: Float
         get() = prefs.getFloat(KEY_STARTING_WEIGHT, 0f)
         set(value) = prefs.edit().putFloat(KEY_STARTING_WEIGHT, value).apply()
 
     var weightReminderEnabled: Boolean
-        get() = prefs.getBoolean(KEY_WEIGHT_REMINDER_ENABLED, false)
-        set(value) = prefs.edit().putBoolean(KEY_WEIGHT_REMINDER_ENABLED, value).apply()
+        get() = shoppingReminderEnabled
+        set(value) {
+            shoppingReminderEnabled = value
+        }
 
     var weightReminderTime: String
-        get() = prefs.getString(KEY_WEIGHT_REMINDER_TIME, "08:00") ?: "08:00"
-        set(value) = prefs.edit().putString(KEY_WEIGHT_REMINDER_TIME, value).apply()
+        get() = shoppingReminderTime
+        set(value) {
+            shoppingReminderTime = value
+        }
+
+    var shoppingReminderEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SHOPPING_REMINDER_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_SHOPPING_REMINDER_ENABLED, value).apply()
+
+    var shoppingReminderDay: Int
+        get() = prefs.getInt(KEY_SHOPPING_REMINDER_DAY, 1)
+        set(value) = prefs.edit().putInt(KEY_SHOPPING_REMINDER_DAY, value.coerceIn(1, 7)).apply()
+
+    var shoppingReminderTime: String
+        get() = prefs.getString(KEY_SHOPPING_REMINDER_TIME, "08:00")
+            ?: prefs.getString(KEY_WEIGHT_REMINDER_TIME, "08:00")
+            ?: "08:00"
+        set(value) = prefs.edit()
+            .putString(KEY_SHOPPING_REMINDER_TIME, value)
+            .putString(KEY_WEIGHT_REMINDER_TIME, value)
+            .apply()
+
+    var mealPrepReminderEnabled: Boolean
+        get() = prefs.getBoolean(KEY_MEAL_PREP_REMINDER_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_MEAL_PREP_REMINDER_ENABLED, value).apply()
+
+    var mealPrepReminderTime: String
+        get() = prefs.getString(KEY_MEAL_PREP_REMINDER_TIME, "18:00") ?: "18:00"
+        set(value) = prefs.edit().putString(KEY_MEAL_PREP_REMINDER_TIME, value).apply()
 
     var dailyWaterGoalMl: Float
         get() = prefs.getFloat(KEY_WATER_GOAL_ML, 2000f)
@@ -60,9 +93,15 @@ class UserPreferences(context: Context) {
         private const val KEY_CARB_PERCENT = "carbGoalPercent"
         private const val KEY_FAT_PERCENT = "fatGoalPercent"
         private const val KEY_PROTEIN_PERCENT = "proteinGoalPercent"
+        private const val KEY_MEALS_PER_DAY = "mealsPerDay"
         private const val KEY_STARTING_WEIGHT = "startingWeightKg"
         private const val KEY_WEIGHT_REMINDER_ENABLED = "weightReminderEnabled"
         private const val KEY_WEIGHT_REMINDER_TIME = "weightReminderTime"
+        private const val KEY_SHOPPING_REMINDER_ENABLED = "shoppingReminderEnabled"
+        private const val KEY_SHOPPING_REMINDER_DAY = "shoppingReminderDay"
+        private const val KEY_SHOPPING_REMINDER_TIME = "shoppingReminderTime"
+        private const val KEY_MEAL_PREP_REMINDER_ENABLED = "mealPrepReminderEnabled"
+        private const val KEY_MEAL_PREP_REMINDER_TIME = "mealPrepReminderTime"
         private const val KEY_WATER_GOAL_ML = "waterGoalMl"
         private const val KEY_WATER_UNIT_OZ = "waterUnitOz"
     }

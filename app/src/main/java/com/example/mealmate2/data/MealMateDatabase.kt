@@ -13,9 +13,12 @@ import androidx.room.RoomDatabase
         WaterEntry::class,
         CustomFood::class,
         MealTemplate::class,
-        MealTemplateItem::class
+        MealTemplateItem::class,
+        Meal::class,
+        Ingredient::class,
+        ShoppingItem::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class MealMateDatabase : RoomDatabase() {

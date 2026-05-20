@@ -2,6 +2,7 @@ package com.example.mealmate2.data
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 
@@ -76,4 +77,36 @@ data class MealTemplateWithItems(
     @Embedded val template: MealTemplate,
     @Relation(parentColumn = "id", entityColumn = "templateId")
     val items: List<MealTemplateItem>
+)
+
+@Entity(tableName = "meals")
+data class Meal(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val instructions: String = "",
+    val servings: Int = 1,
+    val createdAt: Long,
+    val updatedAt: Long
+)
+
+@Entity(
+    tableName = "ingredients",
+    indices = [Index("mealId")]
+)
+data class Ingredient(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val mealId: Long,
+    val name: String,
+    val quantity: Double,
+    val unit: String
+)
+
+@Entity(tableName = "shopping_items")
+data class ShoppingItem(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val quantity: Double,
+    val unit: String,
+    val isChecked: Boolean = false,
+    val isManual: Boolean = false
 )

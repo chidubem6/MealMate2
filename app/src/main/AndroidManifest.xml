@@ -37,6 +37,11 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name=".provider.MealMateContentProvider"
+            android:authorities="com.example.mealmate2.provider"
+            android:exported="false" />
+
     </application>
 
 </manifest>
