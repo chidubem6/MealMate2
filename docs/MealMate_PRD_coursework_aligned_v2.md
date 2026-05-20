@@ -1,4 +1,4 @@
-# PRD: MealMate — Native Android Meal Planning App
+# PRD: MealMate — Native Android Calorie Tracker App
 
 ## 1. Product overview
 
@@ -9,7 +9,7 @@
 **Coursework:** 25COB155 Mobile Application Development  
 **Development approach:** Individual coursework project built from scratch using Kotlin and native Android APIs.
 
-MealMate is a local-first Android meal planning app that helps users create their own meals, choose how many meals they want to plan per day, assign meals to a weekly plan, automatically generate a combined shopping list, share the shopping list, and receive reminders to shop or prepare meals.
+MealMate is a local-first Android calorie tracker that helps users log food across daily meal slots, track calories and macros against a personal daily goal, view progress at a glance, and build an awareness of their nutritional intake over time — similar in concept to MyFitnessPal but intentionally scoped for a coursework project.
 
 The app is designed to satisfy the 25COB155 coursework specification while staying realistic to build within the coursework timeframe.
 
@@ -17,27 +17,25 @@ The app is designed to satisfy the 25COB155 coursework specification while stayi
 
 ## 2. Confirmed product decisions
 
-The following decisions have been confirmed:
-
-1. The user can choose how many meals they want to plan per day.
-2. Duplicate ingredients should be combined in the shopping list.
-3. Shopping list totals should be calculated where ingredient names and units match.
+1. Users create their own custom foods with calorie and macro information.
+2. Users log food entries against named meal slots (Breakfast, Lunch, Dinner, Snacks).
+3. Daily calorie and macro totals are calculated automatically from logged entries.
 4. The app will be local-only.
 5. Firebase will not be used.
 6. The selected optional features are:
    - Android ShareSheet,
    - Notifications,
    - adaptation for different screen sizes.
-7. The target audience is general meal planners, not only students.
-8. Users will create their own meals.
+7. Users set a personal daily calorie goal in Settings.
+8. Macros tracked are protein, carbohydrates, and fat.
 
 ---
 
 ## 3. Problem statement
 
-Many people struggle to plan meals consistently, forget ingredients while shopping, or buy duplicate items because they do not have a clear weekly plan.
+Many people want to track what they eat and stay within a daily calorie target, but popular apps like MyFitnessPal require account creation, network access, and navigate a complex feature set that can feel overwhelming.
 
-MealMate solves this by allowing users to create meals, plan meals across the week, and automatically generate a shopping list from the selected meals. The shopping list combines duplicate ingredients and calculates totals, making shopping clearer and reducing waste.
+MealMate solves this by letting users create foods, log them to daily meal slots, and instantly see their remaining calories and macro breakdown for the day — all stored locally on-device with no login required.
 
 ---
 
@@ -45,14 +43,14 @@ MealMate solves this by allowing users to create meals, plan meals across the we
 
 ### Primary target user
 
-General meal planners who want a simple way to organise meals and shopping without using a complex nutrition, calorie, or recipe app.
+People who want to be aware of their calorie and macro intake without the complexity of a full nutrition platform.
 
 ### Example users
 
-- Someone planning meals for the week.
-- Someone shopping for a household.
-- Someone trying to reduce food waste.
-- Someone who wants a simple grocery list generated from planned meals.
+- Someone counting calories to lose or maintain weight.
+- Someone tracking protein intake for fitness goals.
+- Someone who wants a quick daily log without creating an account.
+- Someone meal-prepping who wants to verify their macros ahead of time.
 
 ---
 
@@ -60,24 +58,21 @@ General meal planners who want a simple way to organise meals and shopping witho
 
 ### Functional goals
 
-1. Allow users to create their own meals.
-2. Allow users to add ingredients with quantity and unit.
-3. Allow users to choose how many meals they want to plan per day.
-4. Allow users to assign meals to meal slots across the week.
-5. Automatically generate a shopping list from the weekly plan.
-6. Combine duplicate ingredients in the shopping list where possible.
-7. Calculate total quantities for matching ingredients and units.
-8. Allow users to manually add extra shopping items.
-9. Allow users to check off shopping items.
-10. Allow users to share the shopping list through Android ShareSheet.
-11. Allow users to enable shopping or meal-prep reminders.
+1. Allow users to create custom foods with name, calories, protein, carbohydrates, and fat per serving.
+2. Allow users to log a food to a meal slot (Breakfast, Lunch, Dinner, Snacks) on a given day.
+3. Display a daily summary screen showing calories consumed, calories remaining, and macro totals.
+4. Allow users to set a personal daily calorie goal.
+5. Allow users to view and edit their food log for any given day.
+6. Allow users to delete logged food entries.
+7. Allow users to share their daily summary through Android ShareSheet.
+8. Allow users to enable a daily logging reminder notification.
 
 ### Coursework goals
 
 1. Build a native Android app using Kotlin.
 2. Use the Navigation Component to move between screens.
 3. Use an external Intent through Android ShareSheet.
-4. Use local storage.
+4. Use local storage (Room and SharedPreferences).
 5. Handle lifecycle changes such as screen rotation.
 6. Use permissions responsibly.
 7. Create a custom ContentProvider.
@@ -95,17 +90,17 @@ MealMate will not include the following in the coursework version:
 
 - Firebase,
 - cloud sync,
-- login,
-- user accounts,
-- calorie tracking,
-- macro tracking,
-- barcode scanning,
-- payment features,
-- AI meal generation,
+- login or user accounts,
+- a pre-built food database or barcode scanning,
+- meal planning or shopping lists,
+- exercise or step tracking,
+- water intake tracking,
+- weight logging,
 - social feeds,
-- delivery or ordering features.
+- payment features,
+- AI suggestions.
 
-The app is deliberately local-only so the implementation stays focused on Android coursework requirements rather than backend development.
+The app is deliberately local-only and focused on calorie logging so the implementation stays within the coursework timeframe.
 
 ---
 
@@ -114,13 +109,13 @@ The app is deliberately local-only so the implementation stays focused on Androi
 | Coursework requirement | MealMate implementation |
 |---|---|
 | Native Android app | Built in Android Studio using Kotlin |
-| Minimum two screens | App includes Meal List, Create Meal, Meal Detail, Weekly Plan, Shopping List, and Settings screens |
-| Navigation Component | Used for internal screen navigation |
-| Intent to outside app | Share shopping list via Android ShareSheet |
+| Minimum two screens | App includes Dashboard, Food Log, Add Food Entry, Food Library, Add Custom Food, and Settings screens |
+| Navigation Component | Used for all internal screen navigation |
+| Intent to outside app | Share daily summary via Android ShareSheet |doe
 | Lifecycle handling | ViewModel and SavedStateHandle preserve UI state on rotation |
-| Responsible permissions | Notification permission requested only when reminders are enabled |
+| Responsible permissions | Notification permission requested only when the user enables reminders |
 | Local storage | Room database and SharedPreferences |
-| Custom ContentProvider | `MealMateContentProvider` exposes meal and shopping data |
+| Custom ContentProvider | `MealMateContentProvider` exposes food and log data |
 | Instrumented tests | CRUD tests for ContentProvider |
 | Optional feature 1 | Android ShareSheet |
 | Optional feature 2 | Notifications |
@@ -134,18 +129,30 @@ The app is deliberately local-only so the implementation stays focused on Androi
 
 ## 8.1 Android ShareSheet
 
-Users can share the generated shopping list as plain text using Android ShareSheet.
+Users can share their daily summary as plain text using Android ShareSheet.
 
 Example shared output:
 
 ```text
-MealMate Shopping List
+MealMate — Daily Summary (20 May 2026)
 
-Beef Mince — 1000g
-Tinned Tomatoes — 800g
-Garlic Cloves — 4
-Spaghetti — 400g
-Chicken Breast — 2
+Calories: 1,640 / 2,000 kcal
+Protein: 98g
+Carbs: 180g
+Fat: 52g
+
+Breakfast
+- Oats with milk — 320 kcal
+- Banana — 90 kcal
+
+Lunch
+- Chicken wrap — 510 kcal
+
+Dinner
+- Salmon and rice — 620 kcal
+
+Snacks
+- Greek yoghurt — 100 kcal
 ```
 
 This satisfies the coursework requirement to use an Intent to move to an outside app.
@@ -154,12 +161,16 @@ This satisfies the coursework requirement to use an Intent to move to an outside
 
 ## 8.2 Notifications
 
-Users can enable reminders for:
+Users can enable a daily logging reminder.
 
-- weekly shopping,
-- meal preparation.
+On Android 13 and above, the app will request the `POST_NOTIFICATIONS` permission only when the user enables the reminder.
 
-On Android 13 and above, the app will request the `POST_NOTIFICATIONS` permission only when the user enables reminders.
+Example notification:
+
+```text
+Title: MealMate Reminder
+Body: Don't forget to log your meals today!
+```
 
 ---
 
@@ -181,254 +192,176 @@ Implementation approach:
 
 ---
 
-## 9. Meal slots and daily meal count
+## 9. Meal slots
 
-Unlike a fixed breakfast/lunch/dinner system, MealMate allows the user to choose how many meals they want to plan per day.
+MealMate uses four fixed daily meal slots:
 
-### User setting
+1. **Breakfast**
+2. **Lunch**
+3. **Dinner**
+4. **Snacks**
 
-The user can choose a default daily meal count, for example:
-
-- 1 meal per day,
-- 2 meals per day,
-- 3 meals per day,
-- custom number.
-
-### Example
-
-If the user chooses **3 meals per day**, the weekly plan displays:
-
-```text
-Monday
-- Meal 1
-- Meal 2
-- Meal 3
-
-Tuesday
-- Meal 1
-- Meal 2
-- Meal 3
-```
-
-The app may optionally allow users to rename slots later, for example:
-
-- Breakfast,
-- Lunch,
-- Dinner,
-- Snack,
-- Pre-gym meal.
-
-For the coursework MVP, the safer implementation is to use simple labels such as `Meal 1`, `Meal 2`, and `Meal 3`.
+This is simpler than a configurable slot system and appropriate for a calorie tracking MVP. Each slot can contain multiple food entries on a given day.
 
 ---
 
-## 10. Ingredient combining logic
+## 10. Calorie and macro calculation
 
-The shopping list should combine duplicate ingredients where the ingredient name and unit match.
+### Daily totals
 
-### Example input
-
-```text
-Meal: Spaghetti Bolognese
-- Beef Mince, 500, g
-- Tinned Tomatoes, 400, g
-- Onion, 1, item
-
-Meal: Homemade Burger
-- Beef Mince, 500, g
-- Onion, 1, item
-```
-
-### Generated shopping list
+The daily totals are computed by summing all food entries logged on the selected date.
 
 ```text
-Beef Mince — 1000g
-Tinned Tomatoes — 400g
-Onion — 2 items
+Daily calories consumed = sum of (calories × servings) for all entries on that date
+Remaining = goal − consumed
 ```
 
-### Combining rule
-
-Ingredients can be combined when:
-
-1. ingredient names match after trimming spaces and normalising case,
-2. units match,
-3. quantities are numeric.
-
-### If quantities cannot be combined
-
-If quantities are not numeric or units do not match, the app should list them separately.
-
-Example:
+Macros are summed the same way:
 
 ```text
-Milk — 500ml
-Milk — 1 carton
+Total protein = sum of (protein × servings) for all entries
+Total carbs = sum of (carbs × servings) for all entries
+Total fat = sum of (fat × servings) for all entries
 ```
 
-This keeps the implementation realistic and prevents incorrect totals.
+### Serving size
+
+When logging a food, the user enters a serving multiplier (e.g., 1, 0.5, 2). The stored food values represent one serving. The multiplier scales calories and macros at log time.
 
 ---
 
 ## 11. Core features
 
-## Feature 1: Meal list
+## Feature 1: Dashboard
 
 ### Description
 
-Users can view all meals they have created.
-
-### Functional requirements
-
-The app shall allow users to:
-
-- view saved meals,
-- open meal details,
-- create a new meal,
-- edit a meal,
-- delete a meal.
-
-### Main UI elements
-
-- app title,
-- meal cards,
-- Add Meal button,
-- bottom navigation.
-
----
-
-## Feature 2: Create meal
-
-### Description
-
-Users can create their own meals and add ingredients.
-
-### Functional requirements
-
-The app shall allow users to:
-
-- enter a meal name,
-- enter ingredient name,
-- enter ingredient quantity,
-- select or type ingredient unit,
-- add multiple ingredients,
-- preview ingredients before saving,
-- save the meal locally.
-
-### Main UI elements
-
-- meal name input,
-- ingredient name input,
-- quantity input,
-- unit input,
-- Add Ingredient button,
-- ingredient preview list,
-- Save Meal button.
-
----
-
-## Feature 3: Meal detail
-
-### Description
-
-Users can view a saved meal and its ingredients.
-
-### Functional requirements
-
-The app shall allow users to:
-
-- view meal name,
-- view ingredient list,
-- edit the meal,
-- delete the meal,
-- return to the meal list.
-
-### Main UI elements
-
-- meal title,
-- ingredient list,
-- Edit button,
-- Delete button.
-
----
-
-## Feature 4: Weekly plan
-
-### Description
-
-Users can assign meals to meal slots across the week.
-
-### Functional requirements
-
-The app shall allow users to:
-
-- select how many meals they want per day,
-- view a weekly plan from Monday to Sunday,
-- assign a saved meal to each meal slot,
-- change an assigned meal,
-- remove an assigned meal,
-- generate a shopping list from the full plan.
-
-### Main UI elements
-
-- daily meal count selector,
-- Monday to Sunday list,
-- meal slots under each day,
-- Assign Meal buttons,
-- Generate Shopping List button.
-
----
-
-## Feature 5: Shopping list
-
-### Description
-
-The app generates a shopping list from the weekly plan.
+The dashboard is the home screen. It shows the user's calorie progress and macro breakdown for the current day, and provides quick access to logging food.
 
 ### Functional requirements
 
 The app shall:
 
-- retrieve ingredients from all planned meals,
-- combine duplicate ingredients where possible,
-- calculate total quantities,
-- display ingredient name, total quantity, and unit,
-- allow manual shopping items,
-- allow users to check off items,
-- allow users to share the list.
+- display today's date,
+- display calories consumed and calories remaining against the daily goal,
+- display a macro breakdown (protein, carbohydrates, fat),
+- list logged food entries grouped by meal slot,
+- allow the user to navigate to a previous or next day,
+- allow the user to add a food entry from the dashboard,
+- allow the user to delete a food entry from the dashboard,
+- allow the user to share the daily summary.
 
 ### Main UI elements
 
-- shopping item checklist,
-- total quantity display,
-- Add Item button,
-- Share List button,
-- Clear Checked Items button.
+- date header with previous/next day navigation,
+- calorie progress display (consumed / goal),
+- macro summary row,
+- meal slot sections (Breakfast, Lunch, Dinner, Snacks),
+- food entry rows within each slot,
+- Add Food button per slot,
+- Share button.
 
 ---
 
-## Feature 6: Settings and reminders
+## Feature 2: Add food entry
 
 ### Description
 
-Users can manage reminder preferences and daily meal count.
+Users can log a food from their food library to a meal slot.
 
 ### Functional requirements
 
 The app shall allow users to:
 
-- set default number of meals per day,
-- enable or disable shopping reminders,
-- select reminder day and time,
-- enable or disable meal-prep reminders,
-- request notification permission only when needed,
+- select a meal slot,
+- search or browse the food library,
+- select a food,
+- enter a serving multiplier,
+- confirm and save the entry.
+
+### Main UI elements
+
+- meal slot selector,
+- food search or list,
+- serving size input,
+- calorie preview for selected food and serving,
+- Confirm button.
+
+---
+
+## Feature 3: Food library
+
+### Description
+
+Users can view all custom foods they have created.
+
+### Functional requirements
+
+The app shall allow users to:
+
+- view a list of saved foods,
+- view calorie and macro details for each food,
+- create a new custom food,
+- edit a saved food,
+- delete a saved food.
+
+### Main UI elements
+
+- food list with calorie and macro summary per item,
+- Add Food button,
+- edit and delete actions per food.
+
+---
+
+## Feature 4: Add custom food
+
+### Description
+
+Users can create a custom food entry with nutritional information.
+
+### Functional requirements
+
+The app shall allow users to:
+
+- enter a food name,
+- enter calories per serving,
+- enter protein per serving (grams),
+- enter carbohydrates per serving (grams),
+- enter fat per serving (grams),
+- save the food to the local food library.
+
+### Main UI elements
+
+- food name input,
+- calories input,
+- protein input,
+- carbs input,
+- fat input,
+- Save button.
+
+---
+
+## Feature 5: Settings
+
+### Description
+
+Users can manage their daily calorie goal and reminder preferences.
+
+### Functional requirements
+
+The app shall allow users to:
+
+- set a daily calorie goal,
+- enable or disable a daily logging reminder,
+- select reminder time,
+- request notification permission only when the reminder is enabled,
 - save preferences locally.
 
 ### Main UI elements
 
-- daily meal count selector,
-- reminder toggles,
-- day/time picker,
+- calorie goal input,
+- reminder toggle,
+- time picker,
 - permission explanation text,
 - Save Settings button.
 
@@ -438,12 +371,11 @@ The app shall allow users to:
 
 MealMate will include the following screens:
 
-1. **Meal List Screen**
-2. **Create Meal Screen**
-3. **Meal Detail Screen**
-4. **Weekly Plan Screen**
-5. **Shopping List Screen**
-6. **Settings / Reminders Screen**
+1. **Dashboard Screen**
+2. **Add Food Entry Screen**
+3. **Food Library Screen**
+4. **Add Custom Food Screen**
+5. **Settings Screen**
 
 This exceeds the minimum two-screen coursework requirement while remaining achievable.
 
@@ -452,19 +384,15 @@ This exceeds the minimum two-screen coursework requirement while remaining achie
 ## 13. Navigation flow
 
 ```text
-Meal List
- ├── Create Meal
- ├── Meal Detail
- ├── Weekly Plan
- │    ├── Set daily meal count
- │    ├── Assign Meal to Slot
- │    └── Generate Shopping List → Shopping List
- ├── Shopping List
- │    └── Share List → Android ShareSheet
- └── Settings / Reminders
-      ├── Set daily meal count
-      └── Enable notifications
+Dashboard (home)
+ ├── Add Food Entry → Food Library (pick a food) → back to Add Food Entry
+ ├── Food Library
+ │    └── Add Custom Food
+ └── Settings
+      └── Enable notification reminder
 ```
+
+The Share button on the Dashboard triggers the Android ShareSheet (external Intent).
 
 Internal movement will use the Navigation Component.
 
@@ -474,66 +402,42 @@ External movement will use Android ShareSheet.
 
 ## 14. Data model
 
-## 14.1 Meal
+## 14.1 Food
 
 | Field | Type | Description |
 |---|---|---|
-| id | Int | Unique meal ID |
-| name | String | Meal name |
+| id | Int | Unique food ID |
+| name | String | Food name |
+| caloriesPerServing | Double | Calories in one serving |
+| proteinPerServing | Double | Protein in grams per serving |
+| carbsPerServing | Double | Carbohydrates in grams per serving |
+| fatPerServing | Double | Fat in grams per serving |
 | createdAt | Long | Date created |
-| updatedAt | Long | Date last updated |
 
 ---
 
-## 14.2 Ingredient
+## 14.2 FoodLogEntry
 
 | Field | Type | Description |
 |---|---|---|
-| id | Int | Unique ingredient ID |
-| mealId | Int | Related meal ID |
-| name | String | Ingredient name |
-| quantity | Double | Numeric amount |
-| unit | String | Unit such as g, ml, item, tbsp |
+| id | Int | Unique log entry ID |
+| foodId | Int | Related food ID |
+| mealSlot | String | Breakfast, Lunch, Dinner, or Snacks |
+| servings | Double | Serving multiplier |
+| logDate | String | Date in ISO format (YYYY-MM-DD) |
+| loggedAt | Long | Timestamp of log action |
 
 ---
 
-## 14.3 MealPlanEntry
+## 14.3 UserPreference
+
+Stored in SharedPreferences.
 
 | Field | Type | Description |
 |---|---|---|
-| id | Int | Unique plan entry ID |
-| dayOfWeek | Int | 1 = Monday, 7 = Sunday |
-| slotNumber | Int | Meal slot number for that day |
-| mealId | Int | Assigned meal ID |
-| weekStart | Long | Start date of the relevant week |
-
----
-
-## 14.4 ShoppingItem
-
-| Field | Type | Description |
-|---|---|---|
-| id | Int | Unique shopping item ID |
-| name | String | Ingredient or item name |
-| quantity | Double | Total calculated quantity |
-| unit | String | Unit |
-| isChecked | Boolean | Whether item has been checked off |
-| isManual | Boolean | Whether item was manually added |
-
----
-
-## 14.5 UserPreference
-
-This can be stored in SharedPreferences.
-
-| Field | Type | Description |
-|---|---|---|
-| mealsPerDay | Int | Default number of meal slots per day |
-| shoppingReminderEnabled | Boolean | Whether shopping reminders are enabled |
-| shoppingReminderDay | Int | Selected reminder day |
-| shoppingReminderTime | String | Selected reminder time |
-| mealPrepReminderEnabled | Boolean | Whether prep reminders are enabled |
-| mealPrepReminderTime | String | Selected prep reminder time |
+| dailyCalorieGoal | Int | User's target daily calories |
+| reminderEnabled | Boolean | Whether the daily reminder is on |
+| reminderTime | String | Selected reminder time (HH:mm) |
 
 ---
 
@@ -543,16 +447,13 @@ MealMate will use Room database for structured local data.
 
 Room will store:
 
-- meals,
-- ingredients,
-- weekly plan entries,
-- shopping list items.
+- foods,
+- food log entries.
 
 SharedPreferences will store:
 
-- default meals per day,
-- reminder settings,
-- simple app preferences.
+- daily calorie goal,
+- reminder settings.
 
 Firebase will not be used.
 
@@ -575,31 +476,30 @@ com.example.mealmate.provider
 ### Example URIs
 
 ```text
-content://com.example.mealmate.provider/meals
-content://com.example.mealmate.provider/meals/{id}
-content://com.example.mealmate.provider/ingredients
-content://com.example.mealmate.provider/shopping
-content://com.example.mealmate.provider/shopping/{id}
+content://com.example.mealmate.provider/foods
+content://com.example.mealmate.provider/foods/{id}
+content://com.example.mealmate.provider/log
+content://com.example.mealmate.provider/log/{id}
 ```
 
 ### Supported operations
 
 | Operation | Purpose |
 |---|---|
-| query() | Retrieve meals, ingredients, or shopping items |
-| insert() | Add a meal, ingredient, or shopping item |
-| update() | Update a meal or shopping item |
-| delete() | Delete a meal or shopping item |
+| query() | Retrieve foods or log entries |
+| insert() | Add a food or log entry |
+| update() | Update a food or log entry |
+| delete() | Delete a food or log entry |
 
 ### Instrumented tests
 
 The app will include instrumented tests to verify:
 
-1. a meal can be inserted through the ContentProvider,
-2. a meal can be queried through the ContentProvider,
-3. a meal can be updated through the ContentProvider,
-4. a meal can be deleted through the ContentProvider,
-5. a shopping item can be queried through the ContentProvider,
+1. a food can be inserted through the ContentProvider,
+2. a food can be queried through the ContentProvider,
+3. a food can be updated through the ContentProvider,
+4. a food can be deleted through the ContentProvider,
+5. a log entry can be queried through the ContentProvider,
 6. invalid URIs are handled safely.
 
 ---
@@ -616,7 +516,7 @@ For Android 13 and above:
 
 ### Permission rationale
 
-The app requests notification permission only when the user enables reminders.
+The app requests notification permission only when the user enables the daily reminder.
 
 ### Permissions deliberately not requested
 
@@ -626,16 +526,17 @@ MealMate will not request:
 - microphone,
 - contacts,
 - location,
-- external storage.
+- external storage,
+- internet.
 
 ### Security decisions
 
 MealMate will:
 
 - follow least-privilege permission use,
-- avoid unnecessary personal data,
-- store data locally,
-- validate user input,
+- avoid collecting personal data beyond what the user enters locally,
+- store all data locally on-device,
+- validate user input (e.g., calorie values must be numeric and non-negative),
 - avoid exporting components unless required,
 - limit ContentProvider exposure,
 - handle invalid ContentProvider URIs safely.
@@ -650,11 +551,10 @@ MealMate must behave correctly during lifecycle changes such as rotation.
 
 When the screen rotates:
 
-- entered meal names should remain,
-- unsaved ingredient entries should remain,
-- selected meal count should remain,
-- weekly plan should remain visible,
-- checked shopping items should remain,
+- entered food name and nutritional values should remain,
+- selected meal slot should remain,
+- entered serving size should remain,
+- daily totals on the Dashboard should remain visible,
 - navigation state should not break.
 
 ### Implementation approach
@@ -681,8 +581,8 @@ UI Layer
 - ViewModels
 
 Domain / Logic Layer
-- ShoppingListGenerator
-- IngredientCombiner
+- DailyTotalsCalculator
+- MacroCalculator
 - ReminderScheduler
 - InputValidator
 
@@ -703,139 +603,110 @@ This structure keeps the app easier to build, test, and explain during the demo.
 
 MealMate should be:
 
-- simple,
-- clean,
-- easy to read,
-- fast to use,
-- focused on meal planning and shopping.
+- simple and fast to use,
+- easy to read with clear calorie numbers,
+- focused on the daily log and remaining calories.
 
 ### Suggested visual style
 
-- light neutral background,
-- green accent colour,
-- rounded meal cards,
-- bottom navigation,
-- checkbox shopping list,
-- clear weekly plan layout.
+- calorie progress shown prominently on the Dashboard,
+- macro breakdown as a compact row (protein / carbs / fat),
+- meal slot sections clearly separated,
+- food cards showing name and calorie value,
+- bottom navigation or top navigation bar,
+- clean inputs for food creation and logging.
 
 ---
 
-## 21. Meal categories clarification
-
-Meal categories are optional labels that can help users organise meals. They do not replace the user's own meal creation.
-
-For example, when a user creates a meal, they could optionally label it as:
-
-- high protein,
-- vegetarian,
-- quick meal,
-- breakfast,
-- lunch,
-- dinner,
-- budget meal,
-- meal prep friendly.
-
-This would allow filtering later, such as “show me high-protein meals” or “show quick meals”.
-
-However, for the coursework MVP, categories are not necessary. Since users are already creating their own meals, categories should be treated as a **could-have** feature, not a must-have. The app is strong enough without them.
-
----
-
-## 22. MVP scope
+## 21. MVP scope
 
 ### Must-have
 
-- Meal List Screen
-- Create Meal Screen
-- Meal Detail Screen
-- Weekly Plan Screen
-- Shopping List Screen
-- Settings / Reminders Screen
-- User-selected meals per day
-- Combined shopping list totals
+- Dashboard Screen with daily calorie and macro totals
+- Add Food Entry Screen
+- Food Library Screen
+- Add Custom Food Screen
+- Settings Screen
+- Daily calorie goal setting
+- Four fixed meal slots (Breakfast, Lunch, Dinner, Snacks)
+- Serving size multiplier
 - Room local database
 - Navigation Component
 - ViewModel lifecycle handling
-- Android ShareSheet
-- Notifications
+- Android ShareSheet (share daily summary)
+- Notifications (daily logging reminder)
 - Responsive layouts
 - Custom ContentProvider
 - Instrumented ContentProvider tests
 
 ### Should-have
 
-- Edit saved meals
-- Delete meals
-- Manual shopping list items
-- Check off shopping list items
-- Reminder settings
+- Edit saved foods
+- Delete food log entries
+- Navigate between days on the Dashboard
+- Calories remaining display
 
 ### Could-have
 
-- meal categories,
-- favourite meals,
+- Macro progress bars,
+- food search/filter in the food library,
+- calorie history chart,
 - dark mode,
-- custom meal slot names,
-- weekly plan reset,
 - tablet two-pane layout.
 
 ### Won't-have
 
 - Firebase,
 - login,
-- AI meal generation,
-- nutrition tracking,
+- pre-built food database,
 - barcode scanning,
-- payments,
-- social features.
+- exercise tracking,
+- social features,
+- payments.
 
 ---
 
-## 23. Acceptance criteria
+## 22. Acceptance criteria
 
-### Meal creation
+### Food creation
 
-Given the user enters a meal name and ingredients, when they press Save, then the meal is stored locally and appears in the Meal List.
+Given the user enters a food name and nutritional values, when they press Save, then the food is stored locally and appears in the Food Library.
 
-### Meal count selection
+### Food logging
 
-Given the user selects how many meals they want per day, when they open the Weekly Plan, then each day shows that number of meal slots.
+Given the user selects a food and enters a serving size, when they confirm, then a log entry is created for the selected meal slot and today's date.
 
-### Weekly planning
+### Daily totals
 
-Given the user has saved meals, when they assign a meal to a slot, then the slot displays the assigned meal.
+Given the user has logged food entries for today, when they view the Dashboard, then the calories consumed and remaining update to reflect all logged entries.
 
-### Shopping list generation
+### Macro breakdown
 
-Given the user has planned meals, when they generate a shopping list, then all ingredients from planned meals appear in the Shopping List screen.
-
-### Duplicate ingredient combining
-
-Given multiple planned meals contain the same ingredient with the same unit, when the shopping list is generated, then the quantities are combined into one total.
+Given the user has logged food entries, when they view the Dashboard, then protein, carbohydrate, and fat totals are displayed correctly.
 
 ### ShareSheet
 
-Given the user has a shopping list, when they press Share List, then Android ShareSheet opens with the formatted list.
+Given the user has a daily log, when they press Share, then Android ShareSheet opens with a formatted daily summary.
 
 ### Notifications
 
-Given the user enables reminders, when the selected reminder time occurs, then the app displays a notification.
+Given the user enables the daily reminder, when the selected reminder time occurs, then the app displays a notification.
 
 ### Lifecycle
 
-Given the user is creating a meal, when the screen rotates, then the form state is preserved.
+Given the user is creating a custom food, when the screen rotates, then the entered values are preserved.
 
 ### ContentProvider
 
-Given an instrumented test inserts a meal through the ContentProvider, when the meal is queried, then the inserted meal is returned correctly.
+Given an instrumented test inserts a food through the ContentProvider, when the food is queried, then the inserted food is returned correctly.
 
 ---
 
-## 24. Demo plan
+## 23. Demo plan
 
 The final demo should be no longer than 15 minutes.
 
-### 24.1 Introduction
+### 23.1 Introduction
 
 Explain:
 
@@ -843,7 +714,7 @@ Explain:
 - who it is for,
 - what problem it solves.
 
-### 24.2 Design overview
+### 23.2 Design overview
 
 Show:
 
@@ -851,22 +722,20 @@ Show:
 - navigation flow,
 - main user journey.
 
-### 24.3 Functionality demo
+### 23.3 Functionality demo
 
 Demonstrate:
 
-1. selecting meals per day,
-2. creating a meal,
-3. adding ingredients,
-4. saving the meal,
-5. assigning meals to the week,
-6. generating a combined shopping list,
-7. checking off items,
-8. sharing the shopping list,
-9. enabling reminders,
-10. rotating the device to show lifecycle handling.
+1. setting a daily calorie goal,
+2. creating a custom food with calories and macros,
+3. logging a food to a meal slot,
+4. viewing daily calorie and macro totals on the Dashboard,
+5. logging multiple foods across different meal slots,
+6. sharing the daily summary,
+7. enabling the daily reminder notification,
+8. rotating the device to show lifecycle handling.
 
-### 24.4 Implementation overview
+### 23.4 Implementation overview
 
 Explain:
 
@@ -877,9 +746,9 @@ Explain:
 - ContentProvider,
 - instrumented tests,
 - notification permission handling,
-- ingredient-combining logic.
+- calorie and macro calculation logic.
 
-### 24.5 Reflection
+### 23.5 Reflection
 
 Discuss:
 
@@ -892,19 +761,19 @@ Discuss:
 
 ---
 
-## 25. Risks and mitigations
+## 24. Risks and mitigations
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Scope becomes too large | Project may not be completed | Keep categories and custom slot names as could-have features |
-| Ingredient combining becomes complex | Shopping list totals may be wrong | Only combine when name and unit match |
-| ContentProvider takes time | Mandatory requirement at risk | Implement early using meals and shopping tables |
-| Notification permission issues | Optional feature may fail | Request permission only when enabling reminders |
+| Scope becomes too large | Project may not be completed | Keep macro charts and history as could-have features |
+| Serving size calculation errors | Incorrect daily totals | Validate serving input and test calculation logic |
+| ContentProvider takes time | Mandatory requirement at risk | Implement early using foods and log tables |
+| Notification permission issues | Optional feature may fail | Request permission only when enabling the reminder |
 | Rotation loses form data | Lifecycle marks at risk | Use ViewModel and SavedStateHandle |
-| UI becomes cluttered | Usability marks reduced | Use simple meal cards and clear weekly plan layout |
+| UI becomes cluttered | Usability marks reduced | Show calories prominently, keep macro row compact |
 
 ---
 
-## 26. Final product statement
+## 25. Final product statement
 
-MealMate is a local-first native Android meal planning app built in Kotlin. It allows users to create their own meals, choose how many meals they want to plan per day, assign meals to a weekly plan, generate a combined shopping list with calculated totals, share the list through Android ShareSheet, and receive shopping or meal-prep reminders. It is designed to meet the 25COB155 coursework specification through native Android development, local storage, Navigation Component, lifecycle-aware implementation, responsible permissions, a custom ContentProvider, instrumented tests, notifications, ShareSheet, and responsive layouts.
+MealMate is a local-first native Android calorie tracker built in Kotlin. It allows users to create custom foods with nutritional information, log those foods to daily meal slots, and instantly see their calorie and macro totals against a personal daily goal — similar in concept to MyFitnessPal but scoped for local, account-free use. It is designed to meet the 25COB155 coursework specification through native Android development, local storage, Navigation Component, lifecycle-aware implementation, responsible permissions, a custom ContentProvider, instrumented tests, notifications, ShareSheet, and responsive layouts.

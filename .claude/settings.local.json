@@ -12,7 +12,10 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chidu\\\\AndroidStudioProjects\\\\MealMate2\\\\app\\\\src\\\\main\\\\res\" -Recurse -File | ForEach-Object { $_.FullName })",
       "Bash(gh repo *)",
-      "Bash(Get-Content *)"
+      "Bash(Get-Content *)",
+      "Bash(Select-Object -First 30)",
+      "Bash(read dir *)",
+      "Read(//c/Users/Chidu/AndroidStudioProjects/MealMate2/app/src/main/java/com/example/mealmate2/**)"
     ]
   }
 }

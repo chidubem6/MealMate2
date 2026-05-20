@@ -1,7 +1,9 @@
 package com.example.mealmate2.ui.settings
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -70,6 +72,10 @@ class SettingsFragment : Fragment() {
         }
         btnMealTemplates.setOnClickListener {
             findNavController().navigate(R.id.action_settings_to_templates)
+        }
+        view.findViewById<MaterialButton>(R.id.btnNhsEatwellGuide).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.nhs.uk/live-well/eat-well/food-guidelines-and-food-labels/the-eatwell-guide/"))
+            startActivity(intent)
         }
 
         editCalorieGoal.setText(viewModel.calorieGoal.toString())
