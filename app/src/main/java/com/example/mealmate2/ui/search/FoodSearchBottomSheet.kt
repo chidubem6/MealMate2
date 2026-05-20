@@ -1,0 +1,303 @@
+package com.example.mealmate2.ui.search
+
+import android.app.AlertDialog
+import android.os.Bundle
+import android.text.InputType
+import android.view.inputmethod.EditorInfo
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.Navigation
+import com.example.mealmate2.R
+import com.example.mealmate2.network.FoodProduct
+import com.example.mealmate2.network.FoodServingOption
+import com.example.mealmate2.network.calculateTotals
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
+import java.util.Locale
+
+class FoodSearchBottomSheet : BottomSheetDialogFragment() {
+
+    private val viewModel: FoodSearchViewModel by activityViewModels()
+    private lateinit var adapter: FoodSearchAdapter
+
+    private var date: Long = 0L
+    private var mealCategory: String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        date = arguments?.getLong("date") ?: 0L
+        mealCategory = arguments?.getString("mealCategory") ?: ""
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return inflater.inflate(R.layout.fragment_food_search, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val btnUseTemplate = view.findViewById<MaterialButton>(R.id.btnUseTemplate)
+        val editSearch = view.findViewById<TextInputEditText>(R.id.editSearch)
+        val btnSearch = view.findViewById<MaterialButton>(R.id.btnSearch)
+        val progressSearch = view.findViewById<CircularProgressIndicator>(R.id.progressSearch)
+        val rvSearchResults = view.findViewById<RecyclerView>(R.id.rvSearchResults)
+        val textNoResults = view.findViewById<TextView>(R.id.textNoResults)
+
+        btnUseTemplate.setOnClickListener {
+            dismiss()
+            val bundle = Bundle().apply {
+                putLong("date", date)
+                putString("mealCategory", mealCategory)
+            }
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.mealTemplatesFragment, bundle)
+        }
+
+        adapter = FoodSearchAdapter { product ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                val detailedProduct = viewModel.loadFoodDetails(product)
+                if (isAdded) {
+                    showQuantityDialog(detailedProduct)
+                }
+            }
+        }
+
+        rvSearchResults.layoutManager = LinearLayoutManager(requireContext())
+        rvSearchResults.adapter = adapter
+
+        editSearch.addTextChangedListener { text ->
+            viewModel.updateSearchQuery(text?.toString() ?: "")
+        }
+
+        editSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.search()
+                true
+            } else {
+                false
+            }
+        }
+
+        btnSearch.setOnClickListener {
+            viewModel.search()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.searchResults.collect { results ->
+                        adapter.submitList(results)
+                        updateStatusText(textNoResults)
+                    }
+                }
+
+                launch {
+                    viewModel.loading.collect { isLoading ->
+                        progressSearch.visibility = if (isLoading) View.VISIBLE else View.GONE
+                        updateStatusText(textNoResults)
+                    }
+                }
+
+                launch {
+                    viewModel.error.collect {
+                        updateStatusText(textNoResults)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateStatusText(textNoResults: TextView) {
+        val error = viewModel.error.value
+        val hasQuery = viewModel.searchQuery.value.isNotBlank()
+        val isLoading = viewModel.loading.value
+        val hasResults = viewModel.searchResults.value.isNotEmpty()
+
+        when {
+            error != null -> {
+                textNoResults.text = error
+                textNoResults.visibility = View.VISIBLE
+            }
+            hasQuery && !isLoading && !hasResults -> {
+                textNoResults.text = "No results found"
+                textNoResults.visibility = View.VISIBLE
+            }
+            else -> {
+                textNoResults.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun showQuantityDialog(product: FoodProduct) {
+        val context = requireContext()
+        val servingOptions = product.servingOptions
+        if (servingOptions.isEmpty()) {
+            Toast.makeText(context, "This result has no serving or macro data.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_food_serving_selection, null)
+        val textSelectedFoodName = dialogView.findViewById<TextView>(R.id.textSelectedFoodName)
+        val textSelectedFoodBrand = dialogView.findViewById<TextView>(R.id.textSelectedFoodBrand)
+        val layoutServingsCount = dialogView.findViewById<TextInputLayout>(R.id.layoutServingsCount)
+        val dropdownServingSize = dialogView.findViewById<MaterialAutoCompleteTextView>(R.id.dropdownServingSize)
+        val editServingsCount = dialogView.findViewById<TextInputEditText>(R.id.editServingsCount)
+        val dropdownMealCategory = dialogView.findViewById<MaterialAutoCompleteTextView>(R.id.dropdownMealCategory)
+        val macroPieChart = dialogView.findViewById<MacroPieChartView>(R.id.macroPieChart)
+        val textCaloriesPreview = dialogView.findViewById<TextView>(R.id.textCaloriesPreview)
+        val textCarbsPreview = dialogView.findViewById<TextView>(R.id.textCarbsPreview)
+        val textFatPreview = dialogView.findViewById<TextView>(R.id.textFatPreview)
+        val textProteinPreview = dialogView.findViewById<TextView>(R.id.textProteinPreview)
+        val btnCancelFoodServing = dialogView.findViewById<MaterialButton>(R.id.btnCancelFoodServing)
+        val btnAddFoodServing = dialogView.findViewById<MaterialButton>(R.id.btnAddFoodServing)
+
+        textSelectedFoodName.text = product.displayName
+        if (product.displayBrand.isNotBlank()) {
+            textSelectedFoodBrand.visibility = View.VISIBLE
+            textSelectedFoodBrand.text = product.displayBrand
+        }
+
+        var selectedServing = product.defaultServingOption ?: servingOptions.first()
+        dropdownServingSize.setAdapter(
+            ArrayAdapter(context, android.R.layout.simple_list_item_1, servingOptions.map { it.label })
+        )
+        dropdownServingSize.setText(selectedServing.label, false)
+        dropdownServingSize.setOnItemClickListener { _, _, position, _ ->
+            selectedServing = servingOptions[position]
+            updateServingPreview(
+                selectedServing,
+                editServingsCount,
+                layoutServingsCount,
+                macroPieChart,
+                textCaloriesPreview,
+                textCarbsPreview,
+                textFatPreview,
+                textProteinPreview
+            )
+        }
+
+        val mealOptions = listOf(
+            "breakfast" to "Breakfast",
+            "lunch" to "Lunch",
+            "dinner" to "Dinner",
+            "snacks" to "Snacks"
+        )
+        var selectedMeal = mealOptions.firstOrNull { it.first == mealCategory } ?: mealOptions.first()
+        dropdownMealCategory.setAdapter(
+            ArrayAdapter(context, android.R.layout.simple_list_item_1, mealOptions.map { it.second })
+        )
+        dropdownMealCategory.setText(selectedMeal.second, false)
+        dropdownMealCategory.setOnItemClickListener { _, _, position, _ ->
+            selectedMeal = mealOptions[position]
+        }
+
+        editServingsCount.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        editServingsCount.setText("1")
+        editServingsCount.addTextChangedListener {
+            updateServingPreview(
+                selectedServing,
+                editServingsCount,
+                layoutServingsCount,
+                macroPieChart,
+                textCaloriesPreview,
+                textCarbsPreview,
+                textFatPreview,
+                textProteinPreview
+            )
+        }
+
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .create()
+
+        btnCancelFoodServing.setOnClickListener { dialog.dismiss() }
+        btnAddFoodServing.setOnClickListener {
+            val servings = editServingsCount.text?.toString()?.toFloatOrNull()
+            if (servings == null || servings <= 0f) {
+                layoutServingsCount.error = "Enter a number greater than 0"
+                return@setOnClickListener
+            }
+            val totals = selectedServing.calculateTotals(servings)
+            viewModel.logFood(date, selectedMeal.first, product, totals)
+            dialog.dismiss()
+            dismiss()
+        }
+
+        updateServingPreview(
+            selectedServing,
+            editServingsCount,
+            layoutServingsCount,
+            macroPieChart,
+            textCaloriesPreview,
+            textCarbsPreview,
+            textFatPreview,
+            textProteinPreview
+        )
+        dialog.show()
+    }
+
+    private fun updateServingPreview(
+        serving: FoodServingOption,
+        editServingsCount: TextInputEditText,
+        layoutServingsCount: TextInputLayout,
+        macroPieChart: MacroPieChartView,
+        textCaloriesPreview: TextView,
+        textCarbsPreview: TextView,
+        textFatPreview: TextView,
+        textProteinPreview: TextView
+    ) {
+        val servings = editServingsCount.text?.toString()?.toFloatOrNull()
+        if (servings == null || servings <= 0f) {
+            layoutServingsCount.error = "Enter a number greater than 0"
+            macroPieChart.setMacros(0f, 0f, 0f)
+            textCaloriesPreview.text = "0 kcal"
+            textCarbsPreview.text = "Carbs: 0g"
+            textFatPreview.text = "Fat: 0g"
+            textProteinPreview.text = "Protein: 0g"
+            return
+        }
+
+        layoutServingsCount.error = null
+        val totals = serving.calculateTotals(servings)
+        macroPieChart.setMacros(totals.carbsG, totals.fatG, totals.proteinG)
+        textCaloriesPreview.text = "${totals.calories} kcal"
+        textCarbsPreview.text = "Carbs: ${formatGrams(totals.carbsG)}g"
+        textFatPreview.text = "Fat: ${formatGrams(totals.fatG)}g"
+        textProteinPreview.text = "Protein: ${formatGrams(totals.proteinG)}g"
+    }
+
+    private fun formatGrams(value: Float): String {
+        return if (value % 1f == 0f) {
+            value.toInt().toString()
+        } else {
+            String.format(Locale.getDefault(), "%.1f", value)
+        }
+    }
+
+    companion object {
+        fun newInstance(date: Long, mealCategory: String): FoodSearchBottomSheet {
+            return FoodSearchBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putLong("date", date)
+                    putString("mealCategory", mealCategory)
+                }
+            }
+        }
+    }
+}

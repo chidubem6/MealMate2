@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.mealmate2.ui.home.HomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_home_to_foodSearch"
+            app:destination="@id/foodSearchBottomSheet" />
+        <action
+            android:id="@+id/action_home_to_mealDetails"
+            app:destination="@id/mealDetailsFragment" />
+        <action
+            android:id="@+id/action_home_to_templates"
+            app:destination="@id/mealTemplatesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mealDetailsFragment"
+        android:name="com.example.mealmate2.ui.home.MealDetailsFragment"
+        android:label="Meal Details">
+        <argument
+            android:name="date"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="initialMealCategory"
+            app:argType="string"
+            android:defaultValue="breakfast" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/progressFragment"
+        android:name="com.example.mealmate2.ui.progress.ProgressFragment"
+        android:label="Progress" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.mealmate2.ui.settings.SettingsFragment"
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settings_to_customFoods"
+            app:destination="@id/customFoodsFragment" />
+        <action
+            android:id="@+id/action_settings_to_templates"
+            app:destination="@id/mealTemplatesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/customFoodsFragment"
+        android:name="com.example.mealmate2.ui.foods.CustomFoodsFragment"
+        android:label="My Foods">
+        <action
+            android:id="@+id/action_customFoods_to_create"
+            app:destination="@id/createCustomFoodFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createCustomFoodFragment"
+        android:name="com.example.mealmate2.ui.foods.CreateCustomFoodFragment"
+        android:label="New Food" />
+
+    <fragment
+        android:id="@+id/mealTemplatesFragment"
+        android:name="com.example.mealmate2.ui.templates.MealTemplatesFragment"
+        android:label="Meal Templates">
+        <argument
+            android:name="date"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="mealCategory"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/foodSearchBottomSheet"
+        android:name="com.example.mealmate2.ui.search.FoodSearchBottomSheet"
+        android:label="Search Food">
+        <argument
+            android:name="date"
+            app:argType="long"
+            android:defaultValue="0L" />
+        <argument
+            android:name="mealCategory"
+            app:argType="string"
+            android:defaultValue="breakfast" />
+    </dialog>
+
+</navigation>
