@@ -89,7 +89,7 @@ class FatSecretFoodService(
         val token = getAccessToken()
         val response = foodApi.searchFood(
             authorization = "Bearer $token",
-            query = query
+            query = query.trim().replace(Regex("\\s+"), " ")
         )
         response.error?.let { throw FatSecretApiException(it.message, it.code) }
         return response

@@ -1,10 +1,10 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
 }
-
-import java.util.Properties
 
 val localProperties = Properties().apply {
     val localPropertiesFile = rootProject.file("local.properties")
@@ -15,6 +15,9 @@ val localProperties = Properties().apply {
 
 fun secretValue(name: String): String =
     (localProperties.getProperty(name) ?: providers.environmentVariable(name).orNull ?: "")
+        .trim()
+        .removeSurrounding("\"")
+        .removeSurrounding("'")
         .replace("\\", "\\\\")
         .replace("\"", "\\\"")
 

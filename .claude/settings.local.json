@@ -10,7 +10,8 @@
       "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; Set-Location \"C:\\\\Users\\\\Chidu\\\\AndroidStudioProjects\\\\MealMate2\"; .\\\\gradlew.bat assembleDebug 2>&1 | Select-Object -Last 60)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Chidu\\\\AndroidStudioProjects\\\\MealMate2\\\\app\\\\src\\\\main\" -Recurse -Filter \"*.kt\")",
       "Bash(Select-Object -ExpandProperty FullName)",
-      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chidu\\\\AndroidStudioProjects\\\\MealMate2\\\\app\\\\src\\\\main\\\\res\" -Recurse -File | ForEach-Object { $_.FullName })"
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chidu\\\\AndroidStudioProjects\\\\MealMate2\\\\app\\\\src\\\\main\\\\res\" -Recurse -File | ForEach-Object { $_.FullName })",
+      "Bash(gh repo *)"
     ]
   }
 }
