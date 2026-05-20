@@ -80,7 +80,7 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp)
     implementation(libs.gson)
-    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    coreLibraryDesugaring(libs.desugarJdkLibs)
     ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.junit)

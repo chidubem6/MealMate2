@@ -1,6 +1,7 @@
+@file:android.annotation.SuppressLint("NewApi")
+
 package com.example.mealmate2.ui.home
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -29,7 +30,6 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@SuppressLint("NewApi")
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
