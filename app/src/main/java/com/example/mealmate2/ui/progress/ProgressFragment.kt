@@ -1,5 +1,6 @@
 package com.example.mealmate2.ui.progress
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -11,11 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.mealmate2.R
 import com.example.mealmate2.ui.widget.WeightLineChartView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 
 class ProgressFragment : Fragment() {
 
     private val viewModel: ProgressViewModel by viewModels()
+    private var currentState: ProgressUiState = ProgressUiState()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_progress, container, false)
@@ -23,6 +26,10 @@ class ProgressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<MaterialButton>(R.id.btnShareProgress).setOnClickListener {
+            shareProgress(currentState)
+        }
 
         val textAvgCalories = view.findViewById<TextView>(R.id.textAvgCalories)
         val calorieAvgProgress = view.findViewById<LinearProgressIndicator>(R.id.calorieAvgProgress)
@@ -42,6 +49,8 @@ class ProgressFragment : Fragment() {
         val colorError = resolveThemeColor(android.R.attr.colorError)
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
+            currentState = state
+
             // Calories
             textAvgCalories.text = state.weeklyAverageCalories.toInt().toString()
             textCalorieGoalHint.text = "Goal: ${state.calorieGoal} kcal"
@@ -75,6 +84,35 @@ class ProgressFragment : Fragment() {
 
             weightChart.entries = state.weightHistory.map { it.date to it.weightKg }
         }
+    }
+
+    private fun shareProgress(state: ProgressUiState) {
+        val weightLine = if (state.currentWeightKg != null) {
+            val change = state.weightChangeKg
+            val changePart = if (change != null) {
+                val sign = if (change >= 0) "+" else ""
+                " ($sign%.1f kg overall)".format(change)
+            } else ""
+            "Current weight: %.1f kg%s".format(state.currentWeightKg, changePart)
+        } else {
+            "Current weight: not logged"
+        }
+
+        val text = """
+            My MealMate progress this week:
+
+            Avg calories: ${state.weeklyAverageCalories.toInt()} / ${state.calorieGoal} kcal/day
+            $weightLine
+            Avg carbs: ${state.weeklyAvgCarbsG.toInt()} g/day
+            Avg fat: ${state.weeklyAvgFatG.toInt()} g/day
+            Avg protein: ${state.weeklyAvgProteinG.toInt()} g/day
+        """.trimIndent()
+
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+        startActivity(Intent.createChooser(intent, "Share progress via"))
     }
 
     private fun resolveThemeColor(attr: Int): Int {
