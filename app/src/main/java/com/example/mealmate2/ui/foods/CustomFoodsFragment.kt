@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,6 +25,10 @@ class CustomFoodsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<ImageButton>(R.id.btnCloseCustomFoods).setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         val rvCustomFoods = view.findViewById<RecyclerView>(R.id.rvCustomFoods)
         val textEmptyFoods = view.findViewById<TextView>(R.id.textEmptyFoods)

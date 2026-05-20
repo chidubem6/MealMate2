@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,19 +10,36 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New Food"
-            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/new_food"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+            <ImageButton
+                android:id="@+id/btnCloseCreateFood"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/close"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MealMate.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Food name *"
+            android:hint="@string/food_name_required_hint"
             android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editFoodName"
@@ -34,7 +52,7 @@
             style="@style/Widget.MealMate.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Brand (optional)"
+            android:hint="@string/brand_optional_hint"
             android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editBrand"
@@ -47,7 +65,7 @@
             style="@style/Widget.MealMate.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Serving size (e.g. 100g)"
+            android:hint="@string/serving_size_example_hint"
             android:layout_marginBottom="20dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editServingSize"
@@ -59,7 +77,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nutrition per serving"
+            android:text="@string/nutrition_per_serving"
             android:textAppearance="?attr/textAppearanceLabelLarge"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="12dp" />
@@ -68,7 +86,7 @@
             style="@style/Widget.MealMate.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Calories (kcal) *"
+            android:hint="@string/calories_required_hint"
             android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editCalories"
@@ -81,7 +99,7 @@
             style="@style/Widget.MealMate.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Carbs (g)"
+            android:hint="@string/carbs_grams_hint"
             android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editCarbs"
@@ -94,7 +112,7 @@
             style="@style/Widget.MealMate.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fat (g)"
+            android:hint="@string/fat_grams_hint"
             android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editFat"
@@ -107,7 +125,7 @@
             style="@style/Widget.MealMate.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Protein (g)"
+            android:hint="@string/protein_grams_hint"
             android:layout_marginBottom="24dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editProtein"
@@ -120,7 +138,7 @@
             android:id="@+id/btnSaveFood"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Food"
+            android:text="@string/save_food"
             android:layout_marginBottom="24dp" />
 
     </LinearLayout>

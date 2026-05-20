@@ -21,7 +21,7 @@
             android:id="@+id/btnPrevDay"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="Previous day"
+            android:contentDescription="@string/previous_day"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="@android:drawable/ic_media_previous" />
 
@@ -39,7 +39,7 @@
             android:id="@+id/btnNextDay"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="Next day"
+            android:contentDescription="@string/next_day"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="@android:drawable/ic_media_next" />
 
@@ -64,7 +64,7 @@
                 android:id="@+id/textGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Good morning"
+                android:text="@string/good_morning"
                 android:textAppearance="?attr/textAppearanceHeadlineSmall"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp" />
@@ -97,7 +97,7 @@
                         android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:layout_marginTop="12dp"
-                        android:text="Eaten: 0 / Goal: 2000 kcal" />
+                        android:text="@string/calories_summary_default" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -120,7 +120,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Macros"
+                        android:text="@string/macros"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:layout_marginBottom="12dp" />
 
@@ -135,7 +135,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Carbs"
+                            android:text="@string/carbs"
                             android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView
                             android:id="@+id/textCarbsSummary"
@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant"
-                            android:text="0g / 250g" />
+                            android:text="@string/macro_summary_carbs_default" />
                     </LinearLayout>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/carbsProgress"
@@ -165,7 +165,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Fat"
+                            android:text="@string/fat"
                             android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView
                             android:id="@+id/textFatSummary"
@@ -173,7 +173,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant"
-                            android:text="0g / 65g" />
+                            android:text="@string/macro_summary_fat_default" />
                     </LinearLayout>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/fatProgress"
@@ -195,7 +195,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Protein"
+                            android:text="@string/protein"
                             android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView
                             android:id="@+id/textProteinSummary"
@@ -203,7 +203,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textColor="?attr/colorOnSurfaceVariant"
-                            android:text="0g / 50g" />
+                            android:text="@string/macro_summary_protein_default" />
                     </LinearLayout>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/proteinProgress"
@@ -220,7 +220,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Diary"
+                android:text="@string/diary"
                 android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp" />
@@ -252,25 +252,15 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Breakfast"
+                            android:text="@string/breakfast"
                             android:textAppearance="?attr/textAppearanceTitleSmall" />
                         <TextView
                             android:id="@+id/textBreakfastCalories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 kcal"
+                            android:text="@string/kcal_zero"
                             android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:layout_marginEnd="8dp" />
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnAddBreakfast"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="+"
-                            android:minWidth="0dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
+                            android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvBreakfast"
@@ -308,25 +298,15 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Lunch"
+                            android:text="@string/lunch"
                             android:textAppearance="?attr/textAppearanceTitleSmall" />
                         <TextView
                             android:id="@+id/textLunchCalories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 kcal"
+                            android:text="@string/kcal_zero"
                             android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:layout_marginEnd="8dp" />
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnAddLunch"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="+"
-                            android:minWidth="0dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
+                            android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvLunch"
@@ -364,25 +344,15 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Dinner"
+                            android:text="@string/dinner"
                             android:textAppearance="?attr/textAppearanceTitleSmall" />
                         <TextView
                             android:id="@+id/textDinnerCalories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 kcal"
+                            android:text="@string/kcal_zero"
                             android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:layout_marginEnd="8dp" />
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnAddDinner"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="+"
-                            android:minWidth="0dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
+                            android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvDinner"
@@ -420,25 +390,15 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Snacks"
+                            android:text="@string/snacks"
                             android:textAppearance="?attr/textAppearanceTitleSmall" />
                         <TextView
                             android:id="@+id/textSnacksCalories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 kcal"
+                            android:text="@string/kcal_zero"
                             android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:layout_marginEnd="8dp" />
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnAddSnacks"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="+"
-                            android:minWidth="0dp"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
+                            android:textColor="?attr/colorOnSurfaceVariant" />
                     </LinearLayout>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvSnacks"
@@ -453,7 +413,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Weight"
+                android:text="@string/weight_title"
                 android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="12dp" />
@@ -475,14 +435,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Weight &amp; Notes"
+                        android:text="@string/weight_notes_title"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         android:layout_marginBottom="12dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Weight (kg)"
+                        android:hint="@string/weight_hint"
                         android:layout_marginBottom="8dp">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/editWeight"
@@ -494,7 +454,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Notes"
+                        android:hint="@string/notes_hint"
                         android:layout_marginBottom="12dp">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/editNotes"
@@ -509,7 +469,7 @@
                         android:id="@+id/btnSaveWeightNotes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Save" />
+                        android:text="@string/save" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -531,20 +491,26 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="WATER"
+                        android:text="@string/water"
                         android:textAppearance="?attr/textAppearanceLabelMedium"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:letterSpacing="0.1"
                         android:layout_marginBottom="8dp" />
 
-                    <TextView
-                        android:id="@+id/textWaterCount"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutWaterInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0 ml / 2000 ml"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:layout_marginBottom="8dp" />
+                        android:hint="@string/total_water_amount"
+                        android:layout_marginBottom="8dp"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editWaterAmount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:imeOptions="actionDone" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/waterProgress"
@@ -554,14 +520,23 @@
                         android:progress="0"
                         app:indicatorColor="?attr/colorPrimary"
                         app:trackCornerRadius="4dp"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/textWaterGoal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:text="@string/water_goal_default"
                         android:layout_marginBottom="12dp" />
 
                     <!-- Quick-add buttons -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnWaterAdd150"
@@ -569,7 +544,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="+150ml"
+                            android:text="@string/water_quick_add_150"
                             android:minWidth="0dp"
                             android:paddingStart="4dp"
                             android:paddingEnd="4dp"
@@ -582,7 +557,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="+250ml"
+                            android:text="@string/water_quick_add_250"
                             android:minWidth="0dp"
                             android:paddingStart="4dp"
                             android:paddingEnd="4dp"
@@ -595,7 +570,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="+330ml"
+                            android:text="@string/water_quick_add_330"
                             android:minWidth="0dp"
                             android:paddingStart="4dp"
                             android:paddingEnd="4dp"
@@ -608,35 +583,11 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="+500ml"
+                            android:text="@string/water_quick_add_500"
                             android:minWidth="0dp"
                             android:paddingStart="4dp"
                             android:paddingEnd="4dp"
                             android:textSize="12sp" />
-
-                    </LinearLayout>
-
-                    <!-- Custom / Undo row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnWaterCustom"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Custom amount"
-                            android:layout_marginEnd="8dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnWaterUndo"
-                            style="@style/Widget.Material3.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Undo" />
 
                     </LinearLayout>
 

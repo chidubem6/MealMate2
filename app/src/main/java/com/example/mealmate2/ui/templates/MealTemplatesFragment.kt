@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,6 +28,10 @@ class MealTemplatesFragment : Fragment() {
         val date = arguments?.getLong("date") ?: 0L
         val mealCategory = arguments?.getString("mealCategory") ?: ""
         val isLogMode = date != 0L && mealCategory.isNotBlank()
+
+        view.findViewById<ImageButton>(R.id.btnCloseTemplates).setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         val rvTemplates = view.findViewById<RecyclerView>(R.id.rvTemplates)
         val textEmptyTemplates = view.findViewById<TextView>(R.id.textEmptyTemplates)

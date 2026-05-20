@@ -1,17 +1,17 @@
 package com.example.mealmate2.ui.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.text.InputType
-import android.widget.EditText
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -23,11 +23,13 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+@SuppressLint("NewApi")
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
@@ -46,10 +48,6 @@ class HomeFragment : Fragment() {
     private lateinit var rvLunch: RecyclerView
     private lateinit var rvDinner: RecyclerView
     private lateinit var rvSnacks: RecyclerView
-    private lateinit var btnAddBreakfast: MaterialButton
-    private lateinit var btnAddLunch: MaterialButton
-    private lateinit var btnAddDinner: MaterialButton
-    private lateinit var btnAddSnacks: MaterialButton
     private lateinit var textBreakfastCalories: TextView
     private lateinit var textLunchCalories: TextView
     private lateinit var textDinnerCalories: TextView
@@ -57,14 +55,16 @@ class HomeFragment : Fragment() {
     private lateinit var editWeight: TextInputEditText
     private lateinit var editNotes: TextInputEditText
     private lateinit var btnSaveWeightNotes: MaterialButton
-    private lateinit var textWaterCount: TextView
+    private lateinit var layoutWaterInput: TextInputLayout
+    private lateinit var editWaterAmount: TextInputEditText
     private lateinit var waterProgress: LinearProgressIndicator
+    private lateinit var textWaterGoal: TextView
     private lateinit var btnWaterAdd150: MaterialButton
     private lateinit var btnWaterAdd250: MaterialButton
     private lateinit var btnWaterAdd330: MaterialButton
     private lateinit var btnWaterAdd500: MaterialButton
-    private lateinit var btnWaterCustom: MaterialButton
-    private lateinit var btnWaterUndo: MaterialButton
+
+    private val quickAmountsMl = listOf(150f, 250f, 330f, 500f)
 
     private val breakfastAdapter = DiaryAdapter { viewModel.deleteEntry(it) }
     private val lunchAdapter = DiaryAdapter { viewModel.deleteEntry(it) }
@@ -72,8 +72,6 @@ class HomeFragment : Fragment() {
     private val snacksAdapter = DiaryAdapter { viewModel.deleteEntry(it) }
 
     private val dateFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy", Locale.getDefault())
-
-    private val quickAmountsMl = listOf(150f, 250f, 330f, 500f)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_home, container, false)
@@ -96,10 +94,6 @@ class HomeFragment : Fragment() {
         rvLunch = view.findViewById(R.id.rvLunch)
         rvDinner = view.findViewById(R.id.rvDinner)
         rvSnacks = view.findViewById(R.id.rvSnacks)
-        btnAddBreakfast = view.findViewById(R.id.btnAddBreakfast)
-        btnAddLunch = view.findViewById(R.id.btnAddLunch)
-        btnAddDinner = view.findViewById(R.id.btnAddDinner)
-        btnAddSnacks = view.findViewById(R.id.btnAddSnacks)
         textBreakfastCalories = view.findViewById(R.id.textBreakfastCalories)
         textLunchCalories = view.findViewById(R.id.textLunchCalories)
         textDinnerCalories = view.findViewById(R.id.textDinnerCalories)
@@ -107,35 +101,58 @@ class HomeFragment : Fragment() {
         editWeight = view.findViewById(R.id.editWeight)
         editNotes = view.findViewById(R.id.editNotes)
         btnSaveWeightNotes = view.findViewById(R.id.btnSaveWeightNotes)
-        textWaterCount = view.findViewById(R.id.textWaterCount)
+        layoutWaterInput = view.findViewById(R.id.layoutWaterInput)
+        editWaterAmount = view.findViewById(R.id.editWaterAmount)
         waterProgress = view.findViewById(R.id.waterProgress)
+        textWaterGoal = view.findViewById(R.id.textWaterGoal)
         btnWaterAdd150 = view.findViewById(R.id.btnWaterAdd150)
         btnWaterAdd250 = view.findViewById(R.id.btnWaterAdd250)
         btnWaterAdd330 = view.findViewById(R.id.btnWaterAdd330)
         btnWaterAdd500 = view.findViewById(R.id.btnWaterAdd500)
-        btnWaterCustom = view.findViewById(R.id.btnWaterCustom)
-        btnWaterUndo = view.findViewById(R.id.btnWaterUndo)
 
         val hour = LocalTime.now().hour
         textGreeting.text = when {
-            hour < 12 -> "Good morning"
-            hour < 17 -> "Good afternoon"
-            else -> "Good evening"
+            hour < 12 -> getString(R.string.good_morning)
+            hour < 17 -> getString(R.string.good_afternoon)
+            else -> getString(R.string.good_evening)
         }
 
-        val quickButtons = listOf(btnWaterAdd150, btnWaterAdd250, btnWaterAdd330, btnWaterAdd500)
-        quickButtons.zip(quickAmountsMl).forEach { (btn, ml) ->
-            btn.setOnClickListener { viewModel.addWater(ml) }
-        }
-        btnWaterCustom.setOnClickListener { showCustomWaterDialog() }
-        btnWaterUndo.setOnClickListener { viewModel.undoLastWater() }
-
+        setupWaterInput()
+        setupQuickAddButtons()
         setupRecyclerViews()
         setupNavButtons(view)
-        setupAddButtons()
-        setupMealDetailCards(view)
+        setupMealCards(view)
         setupSaveButton()
         observeViewModel()
+    }
+
+    private fun setupQuickAddButtons() {
+        val buttons = listOf(btnWaterAdd150, btnWaterAdd250, btnWaterAdd330, btnWaterAdd500)
+        buttons.zip(quickAmountsMl).forEach { (btn, ml) ->
+            btn.setOnClickListener { viewModel.addWater(ml) }
+        }
+    }
+
+    private fun setupWaterInput() {
+        editWaterAmount.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                commitWaterInput()
+                true
+            } else {
+                false
+            }
+        }
+        editWaterAmount.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) commitWaterInput()
+        }
+    }
+
+    private fun commitWaterInput() {
+        val isOz = viewModel.state.value?.waterUnitIsOz == true
+        val text = editWaterAmount.text?.toString()?.trim() ?: return
+        val value = text.toFloatOrNull() ?: return
+        val ml = if (isOz) value * ML_PER_OZ else value
+        viewModel.setWaterTotal(ml)
     }
 
     private fun setupRecyclerViews() {
@@ -174,14 +191,7 @@ class HomeFragment : Fragment() {
         ).show()
     }
 
-    private fun setupAddButtons() {
-        btnAddBreakfast.setOnClickListener { openFoodSearch("breakfast") }
-        btnAddLunch.setOnClickListener { openFoodSearch("lunch") }
-        btnAddDinner.setOnClickListener { openFoodSearch("dinner") }
-        btnAddSnacks.setOnClickListener { openFoodSearch("snacks") }
-    }
-
-    private fun setupMealDetailCards(view: View) {
+    private fun setupMealCards(view: View) {
         val meals = listOf(
             R.id.cardBreakfast to "breakfast",
             R.id.cardLunch to "lunch",
@@ -190,7 +200,7 @@ class HomeFragment : Fragment() {
         )
         meals.forEach { (cardId, category) ->
             val card = view.findViewById<MaterialCardView>(cardId)
-            card.setOnClickListener { openMealDetails(category) }
+            card.setOnClickListener { openFoodSearch(category) }
             card.setOnLongClickListener {
                 val entries = when (category) {
                     "breakfast" -> viewModel.state.value?.breakfastEntries
@@ -227,42 +237,13 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-    private fun showCustomWaterDialog() {
-        val isOz = viewModel.state.value?.waterUnitIsOz == true
-        val unit = if (isOz) "oz" else "ml"
-        val editText = EditText(requireContext()).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            hint = "Amount in $unit"
-            setPadding(48, 24, 48, 24)
-        }
-        AlertDialog.Builder(requireContext())
-            .setTitle("Add water ($unit)")
-            .setView(editText)
-            .setPositiveButton("Add") { _, _ ->
-                val value = editText.text.toString().toFloatOrNull() ?: return@setPositiveButton
-                val ml = if (isOz) value * ML_PER_OZ else value
-                viewModel.addWater(ml)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
     private fun openFoodSearch(category: String) {
         val date = viewModel.state.value?.date?.toEpochDay() ?: LocalDate.now().toEpochDay()
-        val bundle = bundleOf(
-            "date" to date,
-            "mealCategory" to category
-        )
+        val bundle = Bundle().apply {
+            putLong("date", date)
+            putString("mealCategory", category)
+        }
         findNavController().navigate(R.id.action_home_to_foodSearch, bundle)
-    }
-
-    private fun openMealDetails(category: String) {
-        val date = viewModel.state.value?.date?.toEpochDay() ?: LocalDate.now().toEpochDay()
-        val bundle = bundleOf(
-            "date" to date,
-            "initialMealCategory" to category
-        )
-        findNavController().navigate(R.id.action_home_to_mealDetails, bundle)
     }
 
     private fun setupSaveButton() {
@@ -281,17 +262,17 @@ class HomeFragment : Fragment() {
             val remaining = (state.calorieGoal - state.totalCalories).coerceAtLeast(0)
             calorieRing.ringProgress = state.totalCalories.toFloat() / state.calorieGoal.coerceAtLeast(1)
             calorieRing.centerText = remaining.toString()
-            textCaloriesSummary.text = "Eaten: ${state.totalCalories} / Goal: ${state.calorieGoal} kcal"
+            textCaloriesSummary.text = getString(R.string.calories_summary, state.totalCalories, state.calorieGoal)
 
-            textCarbsSummary.text = "${state.totalCarbsG.toInt()}g / ${state.carbGoalG}g"
+            textCarbsSummary.text = getString(R.string.macro_summary, state.totalCarbsG.toInt(), state.carbGoalG)
             carbsProgress.max = state.carbGoalG.coerceAtLeast(1)
             carbsProgress.progress = state.totalCarbsG.toInt().coerceIn(0, state.carbGoalG)
 
-            textFatSummary.text = "${state.totalFatG.toInt()}g / ${state.fatGoalG}g"
+            textFatSummary.text = getString(R.string.macro_summary, state.totalFatG.toInt(), state.fatGoalG)
             fatProgress.max = state.fatGoalG.coerceAtLeast(1)
             fatProgress.progress = state.totalFatG.toInt().coerceIn(0, state.fatGoalG)
 
-            textProteinSummary.text = "${state.totalProteinG.toInt()}g / ${state.proteinGoalG}g"
+            textProteinSummary.text = getString(R.string.macro_summary, state.totalProteinG.toInt(), state.proteinGoalG)
             proteinProgress.max = state.proteinGoalG.coerceAtLeast(1)
             proteinProgress.progress = state.totalProteinG.toInt().coerceIn(0, state.proteinGoalG)
 
@@ -300,10 +281,10 @@ class HomeFragment : Fragment() {
             dinnerAdapter.submitList(state.dinnerEntries)
             snacksAdapter.submitList(state.snacksEntries)
 
-            textBreakfastCalories.text = "${state.breakfastEntries.sumOf { it.calories }} kcal"
-            textLunchCalories.text = "${state.lunchEntries.sumOf { it.calories }} kcal"
-            textDinnerCalories.text = "${state.dinnerEntries.sumOf { it.calories }} kcal"
-            textSnacksCalories.text = "${state.snacksEntries.sumOf { it.calories }} kcal"
+            textBreakfastCalories.text = getString(R.string.kcal_unit, state.breakfastEntries.sumOf { it.calories })
+            textLunchCalories.text = getString(R.string.kcal_unit, state.lunchEntries.sumOf { it.calories })
+            textDinnerCalories.text = getString(R.string.kcal_unit, state.dinnerEntries.sumOf { it.calories })
+            textSnacksCalories.text = getString(R.string.kcal_unit, state.snacksEntries.sumOf { it.calories })
 
             editWeight.setText(state.weightKg?.toString() ?: "")
             editNotes.setText(state.note)
@@ -316,18 +297,28 @@ class HomeFragment : Fragment() {
         val isOz = state.waterUnitIsOz
         val unit = if (isOz) "oz" else "ml"
 
-        val currentDisplay = if (isOz) "%.1f".format(state.waterMl / ML_PER_OZ)
-                             else state.waterMl.toInt().toString()
         val goalDisplay = if (isOz) "%.1f".format(state.waterGoalMl / ML_PER_OZ)
                           else state.waterGoalMl.toInt().toString()
-        textWaterCount.text = "$currentDisplay / $goalDisplay $unit"
+        textWaterGoal.text = getString(R.string.water_goal, goalDisplay, unit)
+        layoutWaterInput.hint = getString(R.string.total_water_amount_with_unit, unit)
 
         waterProgress.max = state.waterGoalMl.toInt().coerceAtLeast(1)
         waterProgress.progress = state.waterMl.toInt().coerceIn(0, state.waterGoalMl.toInt())
 
-        val quickButtons = listOf(btnWaterAdd150, btnWaterAdd250, btnWaterAdd330, btnWaterAdd500)
-        quickButtons.zip(quickAmountsMl).forEach { (btn, ml) ->
-            btn.text = if (isOz) "+%.0f $unit".format(ml / ML_PER_OZ) else "+${ml.toInt()} $unit"
+        if (!editWaterAmount.isFocused) {
+            val currentDisplay = if (isOz) "%.1f".format(state.waterMl / ML_PER_OZ)
+                                 else state.waterMl.toInt().toString()
+            editWaterAmount.setText(currentDisplay)
+        }
+
+        val buttons = listOf(btnWaterAdd150, btnWaterAdd250, btnWaterAdd330, btnWaterAdd500)
+        buttons.zip(quickAmountsMl).forEach { (btn, ml) ->
+            val amount = if (isOz) {
+                String.format(Locale.getDefault(), "%.0f", ml / ML_PER_OZ)
+            } else {
+                ml.toInt().toString()
+            }
+            btn.text = getString(R.string.water_quick_add, amount, unit)
         }
     }
 

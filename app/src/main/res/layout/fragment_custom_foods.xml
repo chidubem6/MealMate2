@@ -26,6 +26,14 @@
                 android:text="My Foods"
                 android:textAppearance="?attr/textAppearanceHeadlineSmall" />
 
+            <ImageButton
+                android:id="@+id/btnCloseCustomFoods"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="Close"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
         </LinearLayout>
 
         <TextView

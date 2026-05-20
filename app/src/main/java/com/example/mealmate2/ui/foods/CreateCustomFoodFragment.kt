@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,7 +13,6 @@ import com.example.mealmate2.R
 import com.example.mealmate2.data.CustomFood
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 class CreateCustomFoodFragment : Fragment() {
 
@@ -24,6 +24,10 @@ class CreateCustomFoodFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<ImageButton>(R.id.btnCloseCreateFood).setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         val editFoodName = view.findViewById<TextInputEditText>(R.id.editFoodName)
         val editBrand = view.findViewById<TextInputEditText>(R.id.editBrand)

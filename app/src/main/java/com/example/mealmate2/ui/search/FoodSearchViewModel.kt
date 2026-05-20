@@ -43,12 +43,34 @@ class FoodSearchViewModel(app: Application) : AndroidViewModel(app) {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    val isCustomOnly = MutableStateFlow(false)
+
+    fun setCustomOnly(enabled: Boolean) {
+        isCustomOnly.value = enabled
+        _error.value = null
+        if (enabled) {
+            searchCustomOnly()
+        } else {
+            _searchResults.value = emptyList()
+        }
+    }
+
     fun updateSearchQuery(query: String) {
         searchQuery.value = query
-        if (query.isBlank()) {
+        if (isCustomOnly.value) {
+            searchCustomOnly()
+        } else if (query.isBlank()) {
             _loading.value = false
             _error.value = null
             _searchResults.value = emptyList()
+        }
+    }
+
+    private fun searchCustomOnly() {
+        viewModelScope.launch {
+            val results = diaryRepo.searchCustomFoods(searchQuery.value.trim())
+                .map { it.toFoodProduct() }
+            _searchResults.value = results
         }
     }
 
